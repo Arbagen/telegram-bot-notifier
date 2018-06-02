@@ -1,5 +1,5 @@
 FROM php:7.2-rc-fpm
-RUN apt-get update && apt-get install -y git mc gnupg
+RUN apt-get update && apt-get install -y git mc gnupg cron vim
 RUN docker-php-ext-install opcache
 RUN docker-php-ext-install pdo_mysql
 COPY ./config/php.ini /usr/local/etc/php/php.ini
