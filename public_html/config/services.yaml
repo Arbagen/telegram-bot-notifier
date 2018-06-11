@@ -30,3 +30,9 @@ services:
     Longman\TelegramBot\Telegram:
         class: Longman\TelegramBot\Telegram
         arguments: ['%env(BOT_API_TOKEN)%', '%env(BOT_USERNAME)%']
+
+    GuzzleHttp\Client:
+        class: GuzzleHttp\Client
+
+    PHPHtmlParser\Dom:
+        class: PHPHtmlParser\Dom
