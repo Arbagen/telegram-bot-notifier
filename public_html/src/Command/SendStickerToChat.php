@@ -58,7 +58,7 @@ class SendStickerToChat extends Command
             ->setHelp('This command allows you to send sticker')
         ;
 
-        $this->addArgument('chat_id', InputArgument::REQUIRED, 'Chat id');
+        $this->addArgument('chatId', InputArgument::REQUIRED, 'Chat id');
         $this->addArgument('sticker', InputArgument::REQUIRED, 'Sticker key');
     }
 
@@ -72,7 +72,7 @@ class SendStickerToChat extends Command
 
         $chatId = $input->getArgument('chatId');
         $sticker = $input->getArgument('sticker');
-        $this->sendMessage($chatId, $sticker);
+        $this->sendSticker($chatId, $sticker);
     }
 
     /**
@@ -80,7 +80,7 @@ class SendStickerToChat extends Command
      * @param string $sticker
      * @throws \Longman\TelegramBot\Exception\TelegramLogException
      */
-    private function sendMessage(int $chatId, string $sticker)
+    private function sendSticker(int $chatId, string $sticker)
     {
         TelegramLog::initialize($this->logger);
         TelegramLog::initDebugLog($this->kernel->getLogDir() . '/bot_send_message.log');

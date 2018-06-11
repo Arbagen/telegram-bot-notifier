@@ -15,7 +15,7 @@ services:
 
   mysql:
     container_name: mysql_container
-    image: mysql:latest
+    image: mysql:5.7
     volumes:
       - "./mysql/.data:/var/lib/mysql"
       - "./mysql/config/my.cnf:/usr/local/etc/mysql/my.cnf"
