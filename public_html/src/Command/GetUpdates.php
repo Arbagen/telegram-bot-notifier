@@ -95,12 +95,13 @@ class GetUpdates extends Command
     private function getUpdates()
     {
         TelegramLog::initialize($this->logger);
-        TelegramLog::initDebugLog($this->kernel->getLogDir() . '/bot_debug.log');
+        TelegramLog::initDebugLog($this->kernel->getLogDir() . '/bot_updates.log');
 
         try {
             $this->telegramService->enableMySql($this->mysqlCredentials);
 
-            $this->telegramService->handleGetUpdates();
+            $response = $this->telegramService->handleGetUpdates();
+            $this->logger->info(sprintf('Updated. %s', $response->toJson()));
             $this->logger->info('updated');
         } catch (TelegramException $e) {
             $this->logger->error($e->getMessage());

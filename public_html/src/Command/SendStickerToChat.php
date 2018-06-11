@@ -83,14 +83,13 @@ class SendStickerToChat extends Command
     private function sendSticker(int $chatId, string $sticker)
     {
         TelegramLog::initialize($this->logger);
-        TelegramLog::initDebugLog($this->kernel->getLogDir() . '/bot_send_message.log');
+        TelegramLog::initDebugLog($this->kernel->getLogDir() . '/bot_send_sticker.log');
 
         try {
-            $stickerResponse = \Longman\TelegramBot\Request::sendSticker([
+            \Longman\TelegramBot\Request::sendSticker([
                 'chat_id' => $chatId,
                 'sticker' => $sticker,
             ]);
-            $this->logger->info($stickerResponse->toJson());
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
