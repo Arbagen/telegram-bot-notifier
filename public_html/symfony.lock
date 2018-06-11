@@ -95,6 +95,12 @@
     "ocramius/proxy-manager": {
         "version": "2.2.0"
     },
+    "paquettg/php-html-parser": {
+        "version": "1.7.0"
+    },
+    "paquettg/string-encode": {
+        "version": "0.1.1"
+    },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
     },
@@ -130,6 +136,9 @@
             "version": "4.0",
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
+    },
+    "sunra/php-simple-html-dom-parser": {
+        "version": "v1.5.2"
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.0.2"
