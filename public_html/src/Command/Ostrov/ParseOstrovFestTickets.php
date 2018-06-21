@@ -4,6 +4,7 @@ namespace App\Command\Ostrov;
 use App\Kernel;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Telegram;
+use PHPHtmlParser\Dom\AbstractNode;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -99,39 +100,34 @@ class ParseOstrovFestTickets extends Command
      */
     private function parseTicketsForEvent()
     {
-        $availableClassName="epts-td-available";
-        $priceClassName="epts-sum";
+        $rowClass = "epts-typeRow";
+        $availableClassName = ".epts-td-available";
+        $priceClassName = ".epts-price__effective";
 
         $this->domParser->loadFromUrl($this->uri);
-        $availableCollection = $this->domParser->getElementsByClass(sprintf('td.%s', $availableClassName));
-        $sumCollection = $this->domParser->getElementsByClass(sprintf('td.%s', $priceClassName));
+        /** @var AbstractNode[] $rows */
+        $rows = $this->domParser->getElementsByClass(sprintf('tr.%s', $rowClass));
+        $messages = [];
+        foreach ($rows as $row) {
+            /** @var Dom\Collection|AbstractNode $availableElement */
+            $availableElement = $row->find($availableClassName);
+            /** @var Dom\Collection|AbstractNode $priceElement */
+            $priceElement = $row->find($priceClassName);
+            $ticketCount = $availableElement->count() ? (int) $availableElement->text() : '???';
+            $ticketPrice = $priceElement->count() ? html_entity_decode((string) $priceElement->text()) : '???';
+            $messages[] = sprintf("%d билетов(a) по цене %s", $ticketCount, $ticketPrice);
+        }
+
+        $message = 'На данный момент доступно: ';
+        $message .= implode(' и ', $messages);
 
         try {
-            if (empty($availableCollection)) {
-                throw new ParseException(sprintf("Can't find tag by class '%s'", $availableClassName));
-            }
-            if (empty($sumCollection[0])) {
-                throw new ParseException(sprintf("Can't find tag by class '%s'", $priceClassName));
-            }
-
-            $ticketCount = (int) $availableCollection[0]->text;
-            $ticketPrice = (int) $sumCollection[0]->text;
-
-            $message = sprintf("На данный момент доступно билетов: %d шт. Цена %s грн", $ticketCount, $ticketPrice);
-
-            try {
-                \Longman\TelegramBot\Request::sendMessage([
-                    'chat_id' => $this->chatId,
-                    'text' => $message,
-                ]);
-            } catch (TelegramException $e) {
-                $this->logger->error($e->getMessage());
-            }
-        } catch (ParseException $exception) {
             \Longman\TelegramBot\Request::sendMessage([
                 'chat_id' => $this->chatId,
-                'text' => sprintf('Не удалось обновить инфу. %s', $exception->getMessage()),
+                'text' => $message,
             ]);
-        }
+        } catch (TelegramException $e) {
+                $this->logger->error($e->getMessage());
+            }
     }
 }
